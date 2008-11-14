@@ -1,0 +1,102 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=2440
+
+Screenshots: http://sites.google.com/site/vimcctree/other-plugins
+
+     Plugin provides an integrated environment within Vim for building, maintaining,
+     and using tag databases.
+                                                                                         
+     Features:
+         * Specify a list of files or regex file search patterns for inclusion
+           in tags database
+         * Support for multiple databases
+         * Build and track tag databases for freshness
+             + Tracks new file creations when using regex file patterns                 
+             + Update tag databases on every file save with
+               efficient incremental updates
+             + Tracks file changes outside of Vim
+                                                                                         
+     Limitations:
+         * Might slow-up with huge databases because of  Vim scripting
+           speed and API limitations
+             - Recommended method is to split multiple tag databases for 
+               each sub-directory
+
+
+
+Usage:
+                                                                               
+     Commands:
+      :TagManagerAddDb  <tagDB name> <filelist/pattern> [directory]
+         Illustration:
+         :TagManagerAddDb tags *.[ch] 
+         :TagManagerAddDb tags *.[ch] .
+         [Note that both commands do the same, the directory is optional;
+         if omitted, the current directory is used]
+                                                                               
+         :TagManagerAddDb tags **/*.[ch] 
+           Recursively add all .c and .h files in the current directory and
+           directories under it. More complicated search patterns are
+           possible with the "**" operator. For more help, please see :help **
+                                                                               
+         :TagManagerAddDb tags **/*.[ch] ./dir1/,./dir2/,./dir3/
+           Selectively build individual tags in each of these directories
+           recusively. Paths are relative to current directory. It is also 
+           possible to specify the absolute paths
+                                                                               
+         The sequence of commands has the same effect as the previous
+         command
+         :TagManagerAddDb tags **/*.[ch] ./dir1
+         :TagManagerAddDb tags **/*.[ch] ./dir2
+         :TagManagerAddDb tags **/*.[ch] ./dir3
+         :TagManagerAddDb tags  */*.[ch] ./dir4    [not recursive]
+                                                                               
+                                                                               
+         Using file lists
+         :TagManagerAddDb tags files.lst dir1
+             Uses the "files.lst" file in directory "dir1" for the database
+             creation. Instead of using regex patterns, file lists can also
+             specified. Note that these files must be created manually
+             before-hand.
+                     
+      :TagManagerShowDbs
+         Shows the current loaded Dbs and their internal index
+                                                                               
+      :TagManagerRemoveDb <index>
+          Use it to remove already loaded Tag Dbs. Index must be
+          obtained from the show command
+                                                                               
+      Debugging:
+                                                                               
+         :TagManagerShowDbDetail <index>
+             Show more details of the database: i.e., list of files tracked
+                
+         :TagManagerShowLog
+             Internal debug log; displays the sequence of
+             actions/events/system commands executed. In case of anomalous
+             behavior, please log this.
+                                                                               
+      Configuration:      
+          :let g:TagMgr_CtagsProgName = 'ctags'
+             Specify the executable for the tag generation application.
+             
+          :let g:TagMgr_CtagsProgDir = ''
+             Specify the directory in which the ctags app can be found. If
+             it is on the path, then it can be left empty.
+                 
+          :let g:TagMgr_CtagsExtraOpts = ''
+             Extra options for building the database. A better option is to
+             use the ~/.ctagsrc file to specify extra options; this will be
+             automatically used for every ctags run.
+                                                                               
+          :let g:TagMgr_AutoTrackDbs = 1
+             Disable (0) or enable (1). TagManager will automatically setup
+             the Vim 'tags' variable to reflect the current paths. (More to
+             come later for this feature)
+                                                                               
+          :let g:TagMgr_LogMaxLines = 30
+             Internal debug log. Sets the limit for the number of lines.
+                                                                               
+          :let g:TagMgr_SourceListFile = 'files.lst'
+             When using a regex for file specification, TagManager will
+             create a file list with this name and then pass it to ctags.
+
